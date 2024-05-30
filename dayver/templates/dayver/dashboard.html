@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <table border="1">
+        <tr>
+            <th>Device</th>
+            <th>Temperature</th>
+            <th>Humidity</th>
+            <th>Timestamp</th>
+        </tr>
+        {% for data in iotdata %}
+        <tr>
+            <td>{{ data.device.device_name }}</td>
+            <td>{{ data.temperature }}</td>
+            <td>{{ data.humidity }}</td>
+            <td>{{ data.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Statistics</h2>
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [{% for data in iotdata %} '{{ data.timestamp }}', {% endfor %}],
+                datasets: [{
+                    label: 'Temperature',
+                    data: [{% for data in iotdata %} {{ data.temperature }}, {% endfor %}],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Humidity',
+                    data: [{% for data in iotdata %} {{ data.humidity }}, {% endfor %}],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
